@@ -12,6 +12,23 @@ __connected_table__ = dynamo_client.Table("freshers-example")
 print(__connected_table__.table_status)
 print("\n")
 
+def post_questions():
+    type = input("Please the 'type' (i.e. Partition Key): ")
+    sortKey = input("Please enter the sortKey to be stored: ")
+    question = input("Enter the question: ")
+    item_details = {
+        'type': type,
+        'sortKey': sortKey,
+        'question': question
+    }
+    data = __connected_table__.put_item(
+        TableName='freshers-example',
+        Item=item_details
+    )
+    print("Data Entered Successfully")
+    # print(data['Items'])
+post_questions()
+
 def getAnswer_by_questionId():
     sortKey = input("Please enter the sortKey to get all answers by questionId: ")
     data = __connected_table__.scan(
