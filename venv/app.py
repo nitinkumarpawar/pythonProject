@@ -14,12 +14,17 @@ print("\n")
 
 def post_questions():
     type = input("Please the 'type' (i.e. Partition Key): ")
-    sortKey = input("Please enter the sortKey to be stored: ")
+    # sortKey = input("Please enter the sortKey to be stored: ")
     question = input("Enter the question: ")
+    questionId = input("Enter the questionId: ")
+    userId = input("Enter the userId as your emailId: ")
+    sortKey = str(type+"#"+userId+"#"+questionId)
     item_details = {
         'type': type,
         'sortKey': sortKey,
-        'question': question
+        'question': question,
+        'questionId': questionId,
+        'userId': userId
     }
     data = __connected_table__.put_item(
         TableName='freshers-example',
