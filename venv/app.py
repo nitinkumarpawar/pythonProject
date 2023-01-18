@@ -65,10 +65,13 @@ getAll_question_by_userId()
 
 def edit_answers(val1):
     print("\n")
-    sortKey=input("Please enter the sortKey to update the answer for the particular question: ")
-    # val1: input("Enter the answer thats has to be updated: ")
+    type = "answer"
+    print("Please enter following details to edit and update a particular answer: ")
+    questionId = input("questionId: ")
+    userId = input("userId: ")
+    sortKey= str(type+"#"+questionId+"#"+userId)
     data = __connected_table__.update_item(
-            Key={'type':'answer','sortKey':sortKey},
+            Key={'type':type,'sortKey':sortKey},
             #val1= input("Enter the answer thats has to be updated: "),
             UpdateExpression="SET answer=:val",
             ExpressionAttributeValues = {':val': val1},
@@ -83,7 +86,11 @@ print(data)
 
 def delete_question():
     print("\n")
-    sortKey = input("Please enter the sortKey for the particular question that you want to delete: ")
+    print("Please enter following details to delete a question: ")
+    type = "question"
+    userId = input("userId: ")
+    questionId = input("questionId: ")
+    sortKey = str(type+"#"+userId+"#"+questionId)
     data = __connected_table__.delete_item(
         Key={'type': 'question', 'sortKey': sortKey},
     )
