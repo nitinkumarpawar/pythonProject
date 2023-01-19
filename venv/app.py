@@ -42,21 +42,23 @@ def getAnswer_by_questionId():
         Key={'type': type, 'sortKey': sortKey},
         TableName='freshers-example'
     )
-    print(data)
+    item = data["Item"]
+    pprint(item)
 getAnswer_by_questionId()
 
 def getAll_question_by_userId():
     print("\n")
-    sortKey = input("Please enter the sortKey to get all the questions by userId: ")
-    data = __connected_table__.scan(
-             FilterExpression=Key('sortKey').eq(sortKey)
+    type = "question"
+    print("Please enter following details to get the answer by questionId: ")
+    questionId = input("questionId: ")
+    userId = input("userId: ")
+    sortKey = str(type + "#" + userId + "#" + questionId)
+    data = __connected_table__.get_item(
+        Key={'type': type, 'sortKey': sortKey},
+        TableName='freshers-example'
     )
-    print("Entered 'sortKey': "+sortKey)
-    for i in data['Items']:
-        print("   { ")
-        print("    " + i['question'])
-        print("   }")
-    print("]")
+    item = data["Item"]
+    pprint(item)
 getAll_question_by_userId()
 
 def edit_answers(val1):
@@ -80,15 +82,37 @@ val1 = input("Enter the answer thats has to be updated: ")
 data = edit_answers(val1)
 print(data)
 
+
 def delete_question():
     print("\n")
-    print("Please enter following details to delete a question: ")
     type = "question"
-    userId = input("userId: ")
+    print("Please enter following details to delete a question: ")
     questionId = input("questionId: ")
-    sortKey = str(type+"#"+userId+"#"+questionId)
-    data = __connected_table__.delete_item(
-        Key={'type': 'question', 'sortKey': sortKey},
+    userId = input("userId: ")
+    sortKey= str(type+"#"+userId+"#"+questionId)
+    data = __connected_table__.update_item(
+        Key={'type': type, 'sortKey': sortKey},
+        UpdateExpression='SET #ts = :val1',
+        ExpressionAttributeValues={
+            ":val1": 0
+        },
+        ExpressionAttributeNames={
+            "#ts": "status"
+        },
+        ReturnValues="UPDATED_NEW"
     )
-    print("Deleted the item")
+    type = "answer"
+    sortKey = str(type + "#" + questionId + "#" + userId)
+    data = __connected_table__.update_item(
+        Key={'type': type, 'sortKey': sortKey},
+        UpdateExpression='SET #ts = :val1',
+        ExpressionAttributeValues={
+            ":val1": 0
+        },
+        ExpressionAttributeNames={
+            "#ts": "status"
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+    print("Question deleted successfully")
 delete_question()
