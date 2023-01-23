@@ -70,12 +70,6 @@ getAnswer_by_questionId()
 
 def getAll_question_by_userId():
     print("\n")
-    print("To Get All Questions by UserId: ")
-    type = "question"
-    userId = input("Enter the userId as your emailId: ")
-    sortKey = str(type + "#" + userId)
-    data: object = __connected_table__.query(
-        print("\n")
     type = "question"
     userId = input("Please enter the userId: ")
     sortKey = str(type + "#" + userId)
