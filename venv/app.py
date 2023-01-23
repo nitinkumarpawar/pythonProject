@@ -4,10 +4,11 @@ import json
 from pprint import pprint
 
 dynamo_client = boto3.resource(service_name='dynamodb', region_name='eu-west-1',
-                               aws_access_key_id='ASIAX2KHRAJA2BMVS6MT',
-                               aws_secret_access_key='Dv9mYASXFm8R1bC4EgeiEBjJqJy4Q+kCGGLORMp5',
-                               aws_session_token='IQoJb3JpZ2luX2VjEB4aCWV1LXdlc3QtMSJHMEUCIAo6k+dXcuWFYEIcNBbpQ9unD8HvOE06m+6BS47o6ANdAiEAi39+0GCo/nHx13BGL9SkOpiGeEHz1a6mMFLtkxtrfbwqpAMIh///////////ARADGgw1Mzc1NTc3OTUzOTMiDJGXcgsoIi37HznlEir4AnfSNppwpiXaO1lQhkwyWMIIz/MrXlP0XWh81mJVeDlsEApip4mE3du+chvaU3FKYxvDa5SXo9ZXOAi1FRn4chTuI93xmjIzdiGZJUECB7oLQOB6M88ZTn4ZbL0Hw2Nrku6GIJKqzoogGKducbybb41/Y5uyXiJwnB5Tv+Ti9sOWI65TEKGXaGjRnSawtnSoA4U8ATcU3PP/p6hoYXzUo4f9W4+c6tC0G+Kn24N0xLnENLw0qYoIe78+tvnYByrKBYPn/ow0Q0zYradpDN5J0kwjhjleCMPzcH2rsi4SZSzbO7j6rDQamBEpvNI74i6NpvQKyiy9+U3gmSpoeXz3uX5QQbo9QI3DAFpDzOwmuaxjwHmEooNATL7qL0YVljvWtNGc4zLRRPfvcCJbzOPkG8qe1Ub5/Fs9+XwAY1GEiDNrwoZ0j3WU7k6lH5++3rozIMRyW930zohYM5cD7Nu4jqln8gw2PVec12ZDJRzmcHk24alN/DOAVK8wkdWongY6pgEqRFVejK0NQX56O67ltWxEFb8KI3BFlTF/zX17pdj/QX+ekIdXWA/H0u4otKjga49iW4VZrnNGIDTGFDXaGuevl3a/I/m1EEws82jWs6SxhWI2NXCSzE9+uaZJUXY9b1OQijt4y8yOUBxemEU3lH+auduQvjFOufmCm0c0ChJycryAynL/t1S4em5oel8nr/qSsWXzyDgF6j8z6TgrZWOuufg5L1Ry')
+                               aws_access_key_id='ASIAX2KHRAJARQIYVX3S',
+                               aws_secret_access_key='Mzna6SX+8x50cR/eGzba605Tf9g0ln7LiMfNmNIN',
+                               aws_session_token='IQoJb3JpZ2luX2VjEGUaCWV1LXdlc3QtMSJIMEYCIQDmnzbO7uHATCCFa1rECvkZGu1nIxa4Irg3evlbsYVx2AIhAIkLPW3uO4pPRHCIsVlYHG6N0DDvBh3v+CWqKkeulnZDKqQDCM7//////////wEQAxoMNTM3NTU3Nzk1MzkzIgxxTculh/ahU1LUWPsq+AI9twerkX8/N/Jh5tItHBwdstrv99F9zpMXrH6muUc+Z3f6AZ+MGqO53TOL/rVxZOYLb5A2m7MjVKeEaB198EVRMkYu0Q7ADqhAn5lLIkujHBNBye+epOlWRUy6Ggc68RS0OeIs4ZZSr2AAV3+n7XzY7n5J4lCn6kvk6JWULXiz+z9L891Vtw0aVB5UWZ1kPoSJDIe9PeQdUgMMRqqGsolxzeSdMiWMMClTGrRJyxeRvzJfRPwkgx9O4xUVF+WRFelti4Tt5Uz2KPlweQtnuWP1pANJmbJ+dDtIMhfR6a69z9CnI5fHQZUyJ6gU7SY3rYLpbGEDHp3dl8WvVsxJpRwhxUVA3Llcl0eFajiJyKGJNOqXtpqsx0jPffb2VRYLkBTZROO8n+fLlHLdc7FsPND3ywW5rx6xHSZypDPPqxDnKZZOhHqOpoQ8mnExzKetq9d4m+aHCD24ioXFm7dfPgc1QGU6DgpZwgM3dzdDWPbc6xLeIo5Db3diMJWquJ4GOqUBrvJOG54hwcjaboH6VWsNjhcMaI9KiKqMZkJkuU1TMBShS6MTQmfpiiKLi3OFouAMJXOHXSxPMtSobf8wLrlQCvoQr7hJ5P/YyRdEi0Q1frDCy199zAQ4/npt4WGRh67e3rIu/oDB/gLtA9xlhP3LGQYMPhP3JANiSI3aMaCSQh/Qm40ygCLg4IzglptSmV1IG7AU9sIxpPJmyex7eJn1hwgB1ROv')
 __connected_table__ = dynamo_client.Table("freshers-example")
+
 
 print(__connected_table__.table_status)
 print("\n")
