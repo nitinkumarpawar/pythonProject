@@ -1,5 +1,4 @@
-# from builtins import function
-
+from controller.validator.validate_email import valid_email
 from model.question_model import question_model
 
 obj = question_model()
@@ -8,14 +7,15 @@ obj = question_model()
 def post_question_controller():
     print("To Post a Question: ")
     question = input("Enter the question: ")
-    # questionId = input("Enter the questionId: ")
     userId = input("Enter the userId as your emailId: ")
-    data = {
-        "question": question,
-        # "questionId": questionId,
-        "userId": userId
-    }
-    return obj.post_questions_model(data)
+    if valid_email(userId):
+        data = {
+            "question": question,
+            "userId": userId
+        }
+        return obj.post_questions_model(data)
+    else:
+        return post_question_controller()
 
 
 post_question_controller()
@@ -72,6 +72,5 @@ def delete_question_controller():
         "userId": userId
     }
     return obj.delete_question_model(data)
-
 
 delete_question_controller()

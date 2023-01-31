@@ -40,12 +40,15 @@ class question_model():
             KeyConditionExpression=Key('type').eq(type) & Key('sortKey').begins_with(sortKey),
             FilterExpression=Attr('status').contains('1')
         )
-        for i in data['Items']:
-            response = {
-                "userId": i['userId'],
-                "answer": i['answer']
-            }
-            print(json.dumps(response))
+        if data['Items'] == []:
+            print({"message": "Data not found"})
+        else:
+            for i in data['Items']:
+                response = {
+                    "userId": i['userId'],
+                    "answer": i['answer']
+                }
+                print(json.dumps(response))
 
     def getAll_question_by_userId_model(self, data):
         print("\n")
@@ -56,12 +59,15 @@ class question_model():
             KeyConditionExpression=Key('type').eq(type) & Key('sortKey').begins_with(sortKey),
             FilterExpression=Attr('status').contains('1')
         )
-        for i in data["Items"]:
-            response = {
-                "userId": i['userId'],
-                "question": i['question']
-            }
-            print(json.dumps(response))
+        if data['Items'] == []:
+            print({"message": "Data not found"})
+        else:
+            for i in data["Items"]:
+                response = {
+                    "userId": i['userId'],
+                    "question": i['question']
+                }
+                print(json.dumps(response))
 
     def edit_answers_model(self, data):
         type = "answer"
@@ -69,13 +75,23 @@ class question_model():
         userId = data['userId']
         val1 = data['val1']
         sortKey = str(type + "#" + questionId + "#" + userId)
-        data: object = dynamodb_connector_model.__connected_table__.update_item(
-            Key={'type': type, 'sortKey': sortKey},
-            UpdateExpression="SET answer=:val",
-            ExpressionAttributeValues={':val': val1},
-            ReturnValues="UPDATED_NEW"
+        data: object = dynamodb_connector_model.__connected_table__.query(
+            KeyConditionExpression=Key('type').eq(type) & Key('sortKey').begins_with(sortKey)
         )
-        print(data['Attributes'])
+        for i in data["Items"]:
+            try:
+                if i['status'] == '1':
+                    data: object = dynamodb_connector_model.__connected_table__.update_item(
+                        Key={'type': type, 'sortKey': sortKey},
+                        UpdateExpression="SET answer=:val",
+                        ExpressionAttributeValues={':val': val1},
+                        ReturnValues="UPDATED_NEW"
+                    )
+                    print(data['Attributes'])
+                else:
+                    print({"message": "No question found for the particular questionId"})
+            except Exception as e:
+                print("status key not found")
 
     def delete_question_model(self, data):
         type = "question"
@@ -95,11 +111,9 @@ class question_model():
         )
         type1 = "answer"
         sortKey_begins_with = str(type1 + "#" + questionId)
-        print("enter")
         data = dynamodb_connector_model.__connected_table__.query(
             KeyConditionExpression=Key('type').eq(type1) & Key('sortKey').begins_with(sortKey_begins_with)
         )
-        print('10')
         for res in data["Items"]:
             sortKey1 = str(type1 + "#" + questionId + "#" + res['userId'])
 
