@@ -110,7 +110,7 @@ class question_model():
             ReturnValues="UPDATED_NEW"
         )
         type1 = "answer"
-        sortKey_begins_with = str(type1 + "#" + questionId)
+        sortKey_begins_with = str(type1 + "#" + questionId) 
         data = dynamodb_connector_model.__connected_table__.query(
             KeyConditionExpression=Key('type').eq(type1) & Key('sortKey').begins_with(sortKey_begins_with)
         )

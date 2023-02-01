@@ -73,4 +73,5 @@ def delete_question_controller():
     }
     return obj.delete_question_model(data)
 
+
 delete_question_controller()
