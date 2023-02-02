@@ -1,5 +1,5 @@
 from controller.validator.validate_email import valid_email
-from model.question_model import question_model
+from service.question_model import question_model
 
 obj = question_model()
 
@@ -13,12 +13,13 @@ def post_question_controller():
             "question": question,
             "userId": userId
         }
-        return obj.post_questions_model(data)
+        response = obj.post_questions_model(data)
+        print(response)
     else:
         return post_question_controller()
 
 
-post_question_controller()
+# post_question_controller()
 
 
 def getAnswer_by_questionId_controller():
@@ -26,10 +27,12 @@ def getAnswer_by_questionId_controller():
     print("To Get an Answer by QuestionId: ")
     questionId = input("Enter the questionId: ")
     data = {"questionId": questionId}
-    return obj.getAnswer_by_questionId_model(data)
+    # return obj.getAnswer_by_questionId_model(data)
+    response = obj.getAnswer_by_questionId_model(data)
+    print(response)
 
 
-getAnswer_by_questionId_controller()
+# getAnswer_by_questionId_controller()
 
 
 def getAll_question_by_userId_controller():
@@ -37,10 +40,12 @@ def getAll_question_by_userId_controller():
     print("To Get a Question by userId: ")
     userId = input("Enter the userId: ")
     data = {"userId": userId}
-    return obj.getAll_question_by_userId_model(data)
+    # return obj.getAll_question_by_userId_model(data)
+    response = obj.getAll_question_by_userId_model(data)
+    print(response)
 
 
-getAll_question_by_userId_controller()
+# getAll_question_by_userId_controller()
 
 
 def edit_answers_controller():
@@ -56,10 +61,11 @@ def edit_answers_controller():
         "userId": userId,
         "val1": val1
     }
-    return obj.edit_answers_model(data)
+    response = obj.edit_answers_model(data)
+    print(response)
 
 
-edit_answers_controller()
+# edit_answers_controller()
 
 
 def delete_question_controller():
@@ -71,7 +77,8 @@ def delete_question_controller():
         "questionId": questionId,
         "userId": userId
     }
-    return obj.delete_question_model(data)
+    response = obj.delete_question_model(data)
+    print(response)
 
 
 delete_question_controller()
