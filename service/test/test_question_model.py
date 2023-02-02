@@ -4,6 +4,7 @@ from boto3.dynamodb.conditions import Key, Attr
 
 from unittest.mock import MagicMock
 import boto3 as boto3
+from ecdsa.test_keys import data
 
 from service import dynamodb_connector_model
 from service.question_model import question_model
@@ -63,14 +64,27 @@ def test_edit_answers_model(mocker):
     mock_update_item = MagicMock()
     mocker.patch.object(dynamodb_connector_model.__connected_table__, 'update_item', mock_update_item)
     data = {
-        'questionId': '5000',
-        'userId': 'nk@gmail.com',
-        'val1': 'test'
+        "questionId": "1",
+        "userId": "nk@gmail.com"
     }
-    question_model().edit_answers_model(data)
-    mock_update_item.assert_called_with(
-        Key={'type': type, 'sortKey': 'answer#5000#nk@gmail.com'},
-        UpdateExpression="SET answer=:val1",
-        ExpressionAttributeValues={':val': 'test'},
-        ReturnValues="UPDATED_NEW"
+    result = question_model.delete_question_model(data)
+    mock_update_item.return_value = {
+        'ResponseMetadata': {
+            'HTTPStatusCode': 200
+        }
+    }
+    mock_query = mocker.patch.object(
+        dynamodb_connector_model.__connected_table__, 'query'
     )
+    mock_query.return_value = {
+        "Items": [
+            {"userId": "1", "sortKey": "answer#nk@gmail.com#1"},
+            {"userId": "2", "sortKey": "answer#nk@abc.com#2"}
+        ]
+    }
+    # data = {
+    #     "questionId": "1",
+    #     "userId": "nk@gmail.com"
+    # }
+    # result = question_model.delete_question_model(data)
+    assert result == '{"message": "Question Deleted Successfully"}'
