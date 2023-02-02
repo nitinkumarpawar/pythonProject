@@ -1,5 +1,5 @@
 from controller.validator.validate_email import valid_email
-from service.question_model import question_model
+from model.question_model import question_model
 
 obj = question_model()
 
