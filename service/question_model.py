@@ -2,7 +2,7 @@ import json
 import uuid
 from boto3.dynamodb.conditions import Key, Attr
 
-from model import dynamodb_connector_model
+from service import dynamodb_connector_model
 
 id_db = uuid.uuid4()
 

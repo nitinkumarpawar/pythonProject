@@ -5,8 +5,8 @@ from boto3.dynamodb.conditions import Key, Attr
 from unittest.mock import MagicMock
 import boto3 as boto3
 
-from model import dynamodb_connector_model
-from model.question_model import question_model
+from service import dynamodb_connector_model
+from service.question_model import question_model
 
 obj = dynamodb_connector_model
 
