@@ -67,30 +67,6 @@ class question_model():
                 if data['ResponseMetadata']['HTTPStatusCode'] == 200:
                     return json.dumps(data)
 
-    # def edit_answers_model(self, data):
-    #     type = "answer"
-    #     questionId = data['questionId']
-    #     userId = data['userId']
-    #     val1 = data['val1']
-    #     sortKey = str(type + "#" + questionId + "#" + userId)
-    #     data: object = dynamodb_connector_model.__connected_table__.query(
-    #         KeyConditionExpression=Key('type').eq(type) & Key('sortKey').begins_with(sortKey)
-    #     )
-    #     for i in data["Items"]:
-    #         try:
-    #             if i['status'] == '1':
-    #                 data: object = dynamodb_connector_model.__connected_table__.update_item(
-    #                     Key={'type': type, 'sortKey': sortKey},
-    #                     UpdateExpression="SET answer=:val",
-    #                     ExpressionAttributeValues={':val': val1},
-    #                     ReturnValues="UPDATED_NEW"
-    #                 )
-    #                 return json.dumps(data['Attributes'])
-    #             else:
-    #                 return json.dumps({"message": "No question found for the particular questionId"})
-    #         except Exception as e:
-    #             return json.dumps("status key not found")
-
     def edit_answers_model(self, data):
         type = "answer"
         questionId = data['questionId']
@@ -103,16 +79,6 @@ class question_model():
         )
         for i in data["Items"]:
             try:
-                # if i['status'] == '1':
-                #     data: object = dynamodb_connector_model.__connected_table__.update_item(
-                #         Key={'type': type, 'sortKey': sortKey},
-                #         UpdateExpression="SET answer=:val",
-                #         ExpressionAttributeValues={':val': val1},
-                #         ReturnValues="UPDATED_NEW"
-                #     )
-                #     return json.dumps(data['Attributes'])
-                # else:
-                #     return json.dumps({"message": "No question found for the particular questionId"})
                 data = dynamodb_connector_model.__connected_table__.update_item(
                     Key={'type': type, 'sortKey': sortKey},
                     UpdateExpression="SET answer=:val",
