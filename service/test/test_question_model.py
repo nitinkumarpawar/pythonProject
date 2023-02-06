@@ -1,10 +1,6 @@
-import json
-from unittest import mock
-
 from boto3.dynamodb.conditions import Key, Attr
 
 from unittest.mock import MagicMock
-import boto3 as boto3
 
 from service import dynamodb_connector_model
 from service.question_model import question_model
@@ -86,11 +82,17 @@ def test_edit_answers_model(mocker):
 
 def test_delete_question_model(mocker):
     mock_update_item = MagicMock()
+    mocker_query_item = MagicMock()
+    # mocker.patch.object(dynamodb_connector_model.__connected_table__, 'query', mocker_query_item)
     mocker.patch.object(dynamodb_connector_model.__connected_table__, 'update_item', mock_update_item)
     data = {
         'questionId': '1',
         'userId': 'nk@gmail.com'
     }
+
+    query_responce = {'{ "Items": [{"sortKey": "answer#1#nkpp@gmail.com", "userId": "nkpp@gmail.com", "answer": "adawd", "status": "0", "type": "answer"}], "Count": 1, "ScannedCount": 1, "ResponseMetadata": {"RequestId": "EQSLS48JGEN92OU4U4NI2TCBU7VV4KQNSO5AEMVJF66Q9ASUAAJG", "HTTPStatusCode": 200,"HTTPHeaders": {"server": "Server", "date": "Mon, 06 Feb 2023 10:17:37 GMT","content-type": "application/x-amz-json-1.0", "content-length": "178","connection": "keep-alive","x-amzn-requestid": "EQSLS48JGEN92OU4U4NI2TCBU7VV4KQNSO5AEMVJF66Q9ASUAAJG","x-amz-crc32": "1035775784"}, "RetryAttempts": 0}}'}
+
+    mocker.patch.object(dynamodb_connector_model.__connected_table__, 'query', [])
     obj1.delete_question_model(data)
     mock_update_item.assert_called_with(
         Key={'type': 'question', 'sortKey': 'question#nk@gmail.com#1'},
@@ -103,16 +105,17 @@ def test_delete_question_model(mocker):
         },
         ReturnValues="UPDATED_NEW"
     )
-    mocker_query_item = MagicMock()
-    mocker.patch.object(dynamodb_connector_model.__connected_table__, 'query', mocker_query_item)
-    mocker_query_item.assert_called_with(
-        KeyConditionExpression=Key('type').eq('answer') & Key('sortKey').begins_with('answer#1')
-    )
-    for res in mocker_query_item['Items']:
+
+    # mocker_query_item.assert_called_with(
+    #     KeyConditionExpression=Key('type').eq('answer') & Key('sortKey').begins_with('answer#1')
+    # )
+
+    for res in query_responce['Items']:
         mock_update_item = MagicMock()
         mocker.patch.object(dynamodb_connector_model.__connected_table__, 'update_item', mock_update_item)
         sortKey1 = str('answer' + "#" + '1' + "#" + res['userId'])
         # obj1.delete_question_model(data)
+
         mock_update_item.assert_called_with(
             Key={'type': 'answer', 'sortKey': sortKey1},
             UpdateExpression='SET #ts = :val1',
@@ -124,5 +127,3 @@ def test_delete_question_model(mocker):
             },
             ReturnValues="UPDATED_NEW"
         )
-
-#

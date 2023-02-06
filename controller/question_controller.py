@@ -65,7 +65,7 @@ def edit_answers_controller():
     print(response)
 
 
-edit_answers_controller()
+# edit_answers_controller()
 
 
 def delete_question_controller():
@@ -81,4 +81,4 @@ def delete_question_controller():
     print(response)
 
 
-# delete_question_controller()
+delete_question_controller()
