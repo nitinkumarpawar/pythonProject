@@ -15,8 +15,11 @@ def post_question_controller():
         }
         response = obj.post_questions_model(data)
         print(response)
-    # else:
-    #     return post_question_controller()
+        return response
+
+    else:
+        response = {"message": "Invalid email id"}
+        return response
 
 
 # post_question_controller()
@@ -30,6 +33,7 @@ def getAnswer_by_questionId_controller():
     # return obj.getAnswer_by_questionId_model(data)
     response = obj.getAnswer_by_questionId_model(data)
     print(response)
+    return response
 
 
 # getAnswer_by_questionId_controller()
@@ -43,6 +47,7 @@ def getAll_question_by_userId_controller():
     # return obj.getAll_question_by_userId_model(data)
     response = obj.getAll_question_by_userId_model(data)
     print(response)
+    return response
 
 
 # getAll_question_by_userId_controller()
@@ -63,6 +68,7 @@ def edit_answers_controller():
     }
     response = obj.edit_answers_model(data)
     print(response)
+    return response
 
 
 # edit_answers_controller()
@@ -79,6 +85,6 @@ def delete_question_controller():
     }
     response = obj.delete_question_model(data)
     print(response)
-
+    return response
 
 # delete_question_controller()
