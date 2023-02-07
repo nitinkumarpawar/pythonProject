@@ -121,3 +121,32 @@
         It is a property of a MagicMock object in Python that contains a list of all the calls made to the mock object.
         Each call is represented as a tuple of positional arguments, keyword arguments, and any other information
         related to the call. The list is stored in the order that the calls were made.
+
+    #Example for Controller testcase:
+
+        #service.py
+        def service_function(input_param):
+            return f"Service result for {input_param}"
+
+        #controller.py
+        from myapp.service import service_function
+
+        def controller_function(input_param):
+            result = service_functin(input_param)
+            return f"Controller result: {result}"
+
+        #test_controller.py
+        import unittest.mock import MagicMock
+
+        def test_controller_function(monkeypatch):
+            mock_service = MagicMock()
+            monkeypatch.setattr("myapp.service.service_function", mock_service)
+
+            from myapp.controller import controller_function
+
+            input_param = "test_input"
+            result = controller_function(input_param)
+
+            mock_service.assert_called_once_with(input_param)
+
+            assert result == f"controller result: {mock_service.return_value}"

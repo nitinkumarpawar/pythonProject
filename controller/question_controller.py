@@ -15,8 +15,8 @@ def post_question_controller():
         }
         response = obj.post_questions_model(data)
         print(response)
-    else:
-        return post_question_controller()
+    # else:
+    #     return post_question_controller()
 
 
 # post_question_controller()
@@ -81,4 +81,4 @@ def delete_question_controller():
     print(response)
 
 
-delete_question_controller()
+# delete_question_controller()
