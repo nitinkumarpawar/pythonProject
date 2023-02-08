@@ -87,4 +87,4 @@ def delete_question_controller():
     print(response)
     return response
 
-# delete_question_controller()
+delete_question_controller()

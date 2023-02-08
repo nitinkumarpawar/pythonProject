@@ -124,7 +124,7 @@ class question_model():
                 },
                 ReturnValues="UPDATED_NEW"
             )
-            print(res['sortKey'])
+            # print(res['sortKey'])
         if data['ResponseMetadata']['HTTPStatusCode'] == 200:
             print(data)
             response = {
