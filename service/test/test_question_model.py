@@ -1,134 +1,149 @@
-import pytest
-from boto3.dynamodb.conditions import Key, Attr
+import json
 
 from unittest.mock import MagicMock, patch
 
-from service import dynamodb_connector_model
 from service.question_model import question_model
 
 obj1 = question_model()
 
 
-def test_post_questions_model(mocker):
-    mock_put_item = MagicMock()
-    mocker.patch.object(dynamodb_connector_model.__connected_table__, 'put_item', mock_put_item)
+@patch('service.dynamodb_connector_model.__connected_table__')
+def test_post_questions_service(input_mock):
     data = {
-        'question': 'test',
-        'userId': 'nk@gmail.com'
+        "question": "How are you?",
+        "userId": "abcd@arrkgroup.com"
     }
-    obj1.post_questions_model(data)
-    mock_put_item.assert_called_with(
-        TableName='freshers-example',
-        Item={
-            'type': 'question',
-            'sortKey': 'question#nk@gmail.com#5000',
-            'question': 'test',
-            'questionId': '5000',
-            'status': '1',
-            'userId': 'nk@gmail.com'
-        }
-    )
+    input_mock.put_item.return_value = {
+        'ResponseMetadata': {'RequestId': 'HR1JTJGCFRJB688RDHH076DF77VV4KQNSO5AEMVJF66Q9ASUAAJG', 'HTTPStatusCode': 200,
+                             'HTTPHeaders': {'server': 'Server', 'date': 'Thu, 09 Feb 2023 10:30:11 GMT',
+                                             'content-type': 'application/x-amz-json-1.0', 'content-length': '2',
+                                             'connection': 'keep-alive',
+                                             'x-amzn-requestid': 'HR1JTJGCFRJB688RDHH076DF77VV4KQNSO5AEMVJF66Q9ASUAAJG',
+                                             'x-amz-crc32': '2745614147'}, 'RetryAttempts': 0}}
+    response = obj1.post_questions_model(data)
+    assert response == {"message": "Data Entered Successfully"}
 
 
-def test_getAnswer_by_questionId_model(mocker):
-    mock_query_item = MagicMock()
-    mocker.patch.object(dynamodb_connector_model.__connected_table__, 'query', mock_query_item)
+@patch('service.dynamodb_connector_model.__connected_table__')
+# for testing 'if' clause:
+def test_getAll_answer_by_questionId_service_1(input_mock):
+    data = {"questionId": "22"}
+    query_result = {'Items': [], 'Count': 0, 'ScannedCount': 0,
+                    'ResponseMetadata': {'RequestId': 'MBJSDAJOUJCM6C2UAP0BN71987VV4KQNSO5AEMVJF66Q9ASUAAJG',
+                                         'HTTPStatusCode': 200,
+                                         'HTTPHeaders': {'server': 'Server', 'date': 'Thu, 09 Feb 2023 09:54:06 GMT',
+                                                         'content-type': 'application/x-amz-json-1.0',
+                                                         'content-length': '39', 'connection': 'keep-alive',
+                                                         'x-amzn-requestid': 'MBJSDAJOUJCM6C2UAP0BN71987VV4KQNSO5AEMVJF66Q9ASUAAJG',
+                                                         'x-amz-crc32': '3413411624'}, 'RetryAttempts': 0}}
+    input_mock.query.return_value = query_result
+    response = obj1.getAnswer_by_questionId_model(data)
+    assert response == {"message": "Data not found"}
+
+
+@patch('service.dynamodb_connector_model.__connected_table__')
+# for testing 'else' clause:
+def test_getAll_answer_by_questionId_service_2(input_mock):
+    data = {"questionId": "1"}
+    query_result = {'Items': [
+        {'sortKey': 'answer#1#priyanka@mailinator.com', 'userId': 'priyanka@mailinator.com', 'status': '1',
+         'createdAt': '2022-01-11', 'answer': 'updated answer', 'type': 'answer'}], 'Count': 1, 'ScannedCount': 1,
+        'ResponseMetadata': {'RequestId': 'SG0J2QHK0I2G883E885R0C342FVV4KQNSO5AEMVJF66Q9ASUAAJG',
+                             'HTTPStatusCode': 200,
+                             'HTTPHeaders': {'server': 'Server', 'date': 'Thu, 09 Feb 2023 10:04:18 GMT',
+                                             'content-type': 'application/x-amz-json-1.0',
+                                             'content-length': '236', 'connection': 'keep-alive',
+                                             'x-amzn-requestid': 'SG0J2QHK0I2G883E885R0C342FVV4KQNSO5AEMVJF66Q9ASUAAJG',
+                                             'x-amz-crc32': '3576652810'}, 'RetryAttempts': 0}}
+    input_mock.query.return_value = query_result
+    response = obj1.getAnswer_by_questionId_model(data)
+    assert response == json.dumps({'Items': [
+        {'sortKey': 'answer#1#priyanka@mailinator.com', 'userId': 'priyanka@mailinator.com', 'status': '1',
+         'createdAt': '2022-01-11', 'answer': 'updated answer', 'type': 'answer'}], 'Count': 1, 'ScannedCount': 1,
+        'ResponseMetadata': {
+            'RequestId': 'SG0J2QHK0I2G883E885R0C342FVV4KQNSO5AEMVJF66Q9ASUAAJG',
+            'HTTPStatusCode': 200,
+            'HTTPHeaders': {'server': 'Server', 'date': 'Thu, 09 Feb 2023 10:04:18 GMT',
+                            'content-type': 'application/x-amz-json-1.0',
+                            'content-length': '236', 'connection': 'keep-alive',
+                            'x-amzn-requestid': 'SG0J2QHK0I2G883E885R0C342FVV4KQNSO5AEMVJF66Q9ASUAAJG',
+                            'x-amz-crc32': '3576652810'}, 'RetryAttempts': 0}})
+
+
+@patch('service.dynamodb_connector_model.__connected_table__')
+# for testing 'if' clause:
+def test_getAll_question_by_userId_service_1(input_mock):
+    data = {"userId": "jan_01@arrkgroup.com"}
+    query_result = {'Items': [], 'Count': 0, 'ScannedCount': 0,
+                    'ResponseMetadata': {'RequestId': 'MBJSDAJOUJCM6C2UAP0BN71987VV4KQNSO5AEMVJF66Q9ASUAAJG',
+                                         'HTTPStatusCode': 200,
+                                         'HTTPHeaders': {'server': 'Server', 'date': 'Thu, 09 Feb 2023 09:54:06 GMT',
+                                                         'content-type': 'application/x-amz-json-1.0',
+                                                         'content-length': '39', 'connection': 'keep-alive',
+                                                         'x-amzn-requestid': 'MBJSDAJOUJCM6C2UAP0BN71987VV4KQNSO5AEMVJF66Q9ASUAAJG',
+                                                         'x-amz-crc32': '3413411624'}, 'RetryAttempts': 0}}
+    input_mock.query.return_value = query_result
+    response = obj1.getAll_question_by_userId_model(data)
+    assert response == {"message": "Data not found"}
+
+
+@patch('service.dynamodb_connector_model.__connected_table__')
+# for testing 'else' clause:
+def test_getAll_question_by_userId_service_1(input_mock):
+    data = {"userId": "priyanka.juwar@arrkgroup.com"}
+    query_result = {'Items': [
+        {'question': 'This is my new question', 'sortKey': 'question#priyanka.juwar@arrkgroup.com#1', 'questionId': '1',
+         'userId': 'priyanka.juwar@arrkgroup.com', 'status': '1', 'createdAt': '2022-12-12', 'type': 'question'},
+        {'question': 'Explain Dynamodb?', 'sortKey': 'question#priyanka.juwar@arrkgroup.com#2', 'questionId': '2',
+         'userId': 'priyanka.juwar@arrkgroup.com', 'status': '1', 'createdAt': '2022-12-12', 'type': 'question'}],
+        'Count': 2, 'ScannedCount': 2,
+        'ResponseMetadata': {'RequestId': '8NN6UQBEH07DKHIPDGJAOFC1ORVV4KQNSO5AEMVJF66Q9ASUAAJG',
+                             'HTTPStatusCode': 200,
+                             'HTTPHeaders': {'server': 'Server', 'date': 'Thu, 09 Feb 2023 10:16:16 GMT',
+                                             'content-type': 'application/x-amz-json-1.0',
+                                             'content-length': '524', 'connection': 'keep-alive',
+                                             'x-amzn-requestid': '8NN6UQBEH07DKHIPDGJAOFC1ORVV4KQNSO5AEMVJF66Q9ASUAAJG',
+                                             'x-amz-crc32': '1758263636'}, 'RetryAttempts': 0}}
+    input_mock.query.return_value = query_result
+    response = obj1.getAll_question_by_userId_model(data)
+    assert response == json.dumps({'Items': [
+        {'question': 'This is my new question', 'sortKey': 'question#priyanka.juwar@arrkgroup.com#1', 'questionId': '1',
+         'userId': 'priyanka.juwar@arrkgroup.com', 'status': '1', 'createdAt': '2022-12-12', 'type': 'question'},
+        {'question': 'Explain Dynamodb?', 'sortKey': 'question#priyanka.juwar@arrkgroup.com#2', 'questionId': '2',
+         'userId': 'priyanka.juwar@arrkgroup.com', 'status': '1', 'createdAt': '2022-12-12', 'type': 'question'}],
+        'Count': 2, 'ScannedCount': 2, 'ResponseMetadata': {
+            'RequestId': '8NN6UQBEH07DKHIPDGJAOFC1ORVV4KQNSO5AEMVJF66Q9ASUAAJG', 'HTTPStatusCode': 200,
+            'HTTPHeaders': {'server': 'Server', 'date': 'Thu, 09 Feb 2023 10:16:16 GMT',
+                            'content-type': 'application/x-amz-json-1.0', 'content-length': '524',
+                            'connection': 'keep-alive',
+                            'x-amzn-requestid': '8NN6UQBEH07DKHIPDGJAOFC1ORVV4KQNSO5AEMVJF66Q9ASUAAJG',
+                            'x-amz-crc32': '1758263636'}, 'RetryAttempts': 0}})
+
+
+@patch('service.dynamodb_connector_model.__connected_table__')
+def test_edit_answers_service(input_mock):
     data = {
-        'questionId': '5000'
+        "questionId": "2",
+        "userId": "jan_01@arrkgroup.com",
+        "val1": "updated answer"
     }
-    obj1.getAnswer_by_questionId_model(data)
-    mock_query_item.assert_called_with(
-        KeyConditionExpression=Key('type').eq('answer') & Key('sortKey').begins_with('answer#5000'),
-        FilterExpression=Attr('status').contains('1')
-    )
-
-
-def test_getAll_question_by_userId_model(mocker):
-    mock_query_item = MagicMock()
-    mocker.patch.object(dynamodb_connector_model.__connected_table__, 'query', mock_query_item)
-    data = {
-        'userId': 'nk@gmail.com'
-    }
-    obj1.getAll_question_by_userId_model(data)
-    mock_query_item.assert_called_with(
-        KeyConditionExpression=Key('type').eq('question') & Key('sortKey').begins_with('question#nk@gmail.com'),
-        FilterExpression=Attr('status').contains('1')
-    )
-
-
-def test_edit_answers_model(mocker):
-    mock_query_item = MagicMock()
-    mocker.patch.object(dynamodb_connector_model.__connected_table__, 'query', mock_query_item)
-    data = {
-        'questionId': '1',
-        'userId': 'nk@gmail.com',
-        'val1': 'updated answer'
-    }
-    obj1.edit_answers_model(data)
-    mock_query_item.assert_called_with(
-        KeyConditionExpression=Key('type').eq('answer') & Key('sortKey').begins_with('answer#1#nk@gmail.com'),
-        FilterExpression=Attr('status').contains('1')
-    )
-    for i in mock_query_item['Items']:
-        mock_update_item = MagicMock()
-        mocker.patch.object(dynamodb_connector_model.__connected_table__, 'update_item', mock_update_item)
-        obj1.edit_answers_model(data)
-        mock_update_item.assert_called_with(
-            Key={'type': 'answer', 'sortKey': 'answer#nk@gmail.com#1'},
-            UpdateExpression="SET answer=:val",
-            ExpressionAttributeValues={':val': 'updated answer'},
-            ReturnValues="UPDATED_NEW"
-        )
-
-
-def test_delete_question_model(mocker):
-    mock_update_item = MagicMock()
-    mocker_query_item = MagicMock()
-    # mocker.patch.object(dynamodb_connector_model.__connected_table__, 'query', mocker_query_item)
-    mocker.patch.object(dynamodb_connector_model.__connected_table__, 'update_item', mock_update_item)
-    data = {
-        'questionId': '1',
-        'userId': 'nk@gmail.com'
-    }
-
-    query_responce = {
-        '{ "Items": [{"sortKey": "answer#1#nkpp@gmail.com", "userId": "nkpp@gmail.com", "answer": "adawd", "status": "0", "type": "answer"}], "Count": 1, "ScannedCount": 1, "ResponseMetadata": {"RequestId": "EQSLS48JGEN92OU4U4NI2TCBU7VV4KQNSO5AEMVJF66Q9ASUAAJG", "HTTPStatusCode": 200,"HTTPHeaders": {"server": "Server", "date": "Mon, 06 Feb 2023 10:17:37 GMT","content-type": "application/x-amz-json-1.0", "content-length": "178","connection": "keep-alive","x-amzn-requestid": "EQSLS48JGEN92OU4U4NI2TCBU7VV4KQNSO5AEMVJF66Q9ASUAAJG","x-amz-crc32": "1035775784"}, "RetryAttempts": 0}}'}
-
-    mocker.patch.object(dynamodb_connector_model.__connected_table__, 'query', [])
-    obj1.delete_question_model(data)
-    mock_update_item.assert_called_with(
-        Key={'type': 'question', 'sortKey': 'question#nk@gmail.com#1'},
-        UpdateExpression='SET #ts = :val1',
-        ExpressionAttributeValues={
-            ":val1": '0'
-        },
-        ExpressionAttributeNames={
-            "#ts": "status"
-        },
-        ReturnValues="UPDATED_NEW"
-    )
-
-    # mocker_query_item.assert_called_with(
-    #     KeyConditionExpression=Key('type').eq('answer') & Key('sortKey').begins_with('answer#1')
-    # )
-
-    for res in query_responce['Items']:
-        mock_update_item = MagicMock()
-        mocker.patch.object(dynamodb_connector_model.__connected_table__, 'update_item', mock_update_item)
-        sortKey1 = str('answer' + "#" + '1' + "#" + res['userId'])
-        # obj1.delete_question_model(data)
-
-        mock_update_item.assert_called_with(
-            Key={'type': 'answer', 'sortKey': sortKey1},
-            UpdateExpression='SET #ts = :val1',
-            ExpressionAttributeValues={
-                ":val1": '0'
-            },
-            ExpressionAttributeNames={
-                "#ts": "status"
-            },
-            ReturnValues="UPDATED_NEW"
-        )
+    response = {"answer": "updated answer"}
+    query_result = {'Items': [
+        {'sortKey': 'answer#2#jan_01@arrkgroup.com', 'userId': 'jan_01@arrkgroup.com', 'status': '1',
+         'createdAt': '2022-11-01', 'type': 'answer',
+         'answer': 'NoSQL database service that supports key–value and document data structures'}], 'Count': 1,
+        'ScannedCount': 1,
+        'ResponseMetadata': {'RequestId': '018MUBCF3O83H9DEP2U4S2AT7JVV4KQNSO5AEMVJF66Q9ASUAAJG',
+                             'HTTPStatusCode': 200,
+                             'HTTPHeaders': {'server': 'Server', 'date': 'Thu, 09 Feb 2023 09:22:38 GMT',
+                                             'content-type': 'application/x-amz-json-1.0',
+                                             'content-length': '293', 'connection': 'keep-alive',
+                                             'x-amzn-requestid': '018MUBCF3O83H9DEP2U4S2AT7JVV4KQNSO5AEMVJF66Q9ASUAAJG',
+                                             'x-amz-crc32': '3201606822'}, 'RetryAttempts': 0}}
+    input_mock.query.return_value = query_result
+    input_mock.update_item.return_value = response
+    response = obj1.edit_answers_model(data)
+    assert response == json.dumps({"message": "updated answer"})
 
 
 @patch('service.dynamodb_connector_model.__connected_table__')
@@ -138,18 +153,23 @@ def test_delete_question_service(input_mock):
         "userId": "nk@gmail.com"
     }
 
-    response = {"message": "Deleted Successfully"}
+    response = {"message": "Question Deleted Successfully"}
     input_mock.update_item.return_value = response
 
     result = {
-        "Items": [{'userId': 'priyanka@mailinator.com'}],
-    }
+        "Items": [{'sortKey': 'answer#1#priyanka@mailinator.com', 'userId': 'priyanka@mailinator.com', 'status': '1',
+                   'createdAt': '2022-01-11',
+                   'answer': 'Amazon API Gateway is an AWS service for creating, publishing, maintaining, monitoring, and securing REST, HTTP, and WebSocket APIs at any scale',
+                   'type': 'answer'}], 'Count': 1, 'ScannedCount': 1,
+        'ResponseMetadata': {'RequestId': '3GNSO3L0DLLFBB4R3F79TRJ8FVVV4KQNSO5AEMVJF66Q9ASUAAJG',
+                             'HTTPStatusCode': 200,
+                             'HTTPHeaders': {'server': 'Server', 'date': 'Thu, 09 Feb 2023 07:22:42 GMT',
+                                             'content-type': 'application/x-amz-json-1.0', 'content-length': '366',
+                                             'connection': 'keep-alive',
+                                             'x-amzn-requestid': '3GNSO3L0DLLFBB4R3F79TRJ8FVVV4KQNSO5AEMVJF66Q9ASUAAJG',
+                                             'x-amz-crc32': '1114440167'}, 'RetryAttempts': 0}}
+
     input_mock.query.return_value = result
 
-    data_response_metadata = {
-        "HTTPStatusCode": {200}
-    }
-    input_mock.return_value.status_code = data_response_metadata
-
     response = obj1.delete_question_model(data)
-    assert response == {"message": "Question Deleted Successfully"}
+    assert response == json.dumps({"message": "Question Deleted Successfully"})

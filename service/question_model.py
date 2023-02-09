@@ -12,7 +12,7 @@ class question_model():
     def post_questions_model(self, data):
         type = "question"
         question = data['question']
-        questionId = "5000"
+        questionId = str(id_db)
         userId = data['userId']
         status = '1'
         sortKey = str(type + "#" + str(userId) + "#" + str(questionId))
@@ -32,9 +32,6 @@ class question_model():
         if data['ResponseMetadata']['HTTPStatusCode'] == 200:
             print(data)
             return {"message": "Data Entered Successfully"}
-        else:
-            print(data)
-            return {"message": "Data Not Entered Successfully"}
 
     def getAnswer_by_questionId_model(Self, data):
         type = "answer"
@@ -61,7 +58,7 @@ class question_model():
             FilterExpression=Attr('status').contains('1')
         )
         if data['Items'] == []:
-            print({"message": "Data not found"})
+            return {"message": "Data not found"}
         else:
             for i in data["Items"]:
                 if data['ResponseMetadata']['HTTPStatusCode'] == 200:
@@ -78,16 +75,16 @@ class question_model():
             FilterExpression=Attr('status').contains('1')
         )
         for i in data["Items"]:
-            try:
-                data = dynamodb_connector_model.__connected_table__.update_item(
-                    Key={'type': type, 'sortKey': sortKey},
-                    UpdateExpression="SET answer=:val",
-                    ExpressionAttributeValues={':val': val1},
-                    ReturnValues="UPDATED_NEW"
-                )
-                return json.dumps(data['Attributes'])
-            except Exception as e:
-                return json.dumps("status key not found")
+            data = dynamodb_connector_model.__connected_table__.update_item(
+                Key={'type': type, 'sortKey': sortKey},
+                UpdateExpression="SET answer=:val",
+                ExpressionAttributeValues={':val': val1},
+                ReturnValues="UPDATED_NEW"
+            )
+            response = {
+                "message": "updated answer"
+            }
+            return json.dumps(response)
 
     def delete_question_model(self, data):
         type = "question"
@@ -124,7 +121,7 @@ class question_model():
                 },
                 ReturnValues="UPDATED_NEW"
             )
-            # print(res['sortKey'])
+
         if data['ResponseMetadata']['HTTPStatusCode'] == 200:
             print(data)
             response = {

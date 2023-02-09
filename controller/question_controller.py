@@ -22,7 +22,7 @@ def post_question_controller():
         return response
 
 
-# post_question_controller()
+post_question_controller()
 
 
 def getAnswer_by_questionId_controller():
@@ -87,4 +87,4 @@ def delete_question_controller():
     print(response)
     return response
 
-delete_question_controller()
+# delete_question_controller()
